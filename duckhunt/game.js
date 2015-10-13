@@ -18,10 +18,4 @@ function init(){
         ctx.drawImage(ducks, 170, 154, 40, 40, 350, 150, 90, 90);
     };
     ducks.src = 'duckhunt_various_sheet.png';
-
-
-
-
-
-
 }
