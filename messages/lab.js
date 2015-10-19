@@ -1,6 +1,6 @@
 function parse() {                                                  // XMLHttpRequest code based
     var xmlhttp = new XMLHttpRequest();                             // off the example code at
-    var url = "data.json";                                          // http://www.w3schools.com/json/json_http.asp
+    var url = "http://messagehub.herokuapp.com/messages.json";      // http://www.w3schools.com/json/json_http.asp
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
