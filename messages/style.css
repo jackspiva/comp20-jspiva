@@ -1,0 +1,17 @@
+body {
+    font-family: Helvetica;
+}
+
+.message {
+    max-width: 500px;
+    background-color: #A3FF85;
+    padding: 8px;
+    border-radius: 15px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: grey;
+}
+
+.username {
+    font-weight: bold;
+}
