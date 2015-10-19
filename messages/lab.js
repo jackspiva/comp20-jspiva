@@ -14,5 +14,12 @@ function parse() {
 }
 
 function output(parsed_data) {
-    console.log(parsed_data.length)
+    var messages = "";
+    var i;
+    for(i = 0; i < parsed_data.length; i++) {
+        messages += '<p id="parsed.data[i].id">' +
+                    '<span class="content">'    + parsed_data[i].content    + '</span>'     + " " +
+                    '<span class="username">'   + parsed_data[i].username   + '</span></p>'
+    }
+    document.getElementById("messages").innerHTML = messages;
 }
