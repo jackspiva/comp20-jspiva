@@ -65,6 +65,12 @@
 					infowindow.setContent(marker.title);
 					infowindow.open(map, marker);
 				});
+
+				// Open info window on click of marker
+				google.maps.event.addListener(them_marker, 'click', function() {
+					infowindow.setContent(them_marker.title);
+					infowindow.open(map, them_marker);
+				});
 			}
 		</script>
 	</head>
