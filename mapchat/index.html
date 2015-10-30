@@ -59,17 +59,36 @@
 				}
 				http.send(params);
 			}
-			function attachContent(marker, login, message) {
+			function attachContent(marker, login, message, distance) {
 			  var infowindow = new google.maps.InfoWindow({
-			    content: "<div><p>" + login + "</p>" + "<p>" + message + "</p></div>"
+			    content: "<div><p>" + login + "</p><p>" + message + "</p><p>" + distance + "</p></div>"
 			  });
 			  marker.addListener('click', function() {
 			    infowindow.open(marker.get('map'), marker);
 			  });
-		  }
+		  	}
+			function calcDistance(lat1, lon1, lat2, lon2)	// code based on stack overflow discussion at
+			{												// https://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript
+				Number.prototype.toRad = function() {
+				   return this * Math.PI / 180;
+				}
+				var R = 6371; // km
+				//has a problem with the .toRad() method below.
+				var x1 = lat2-lat1;
+				var dLat = x1.toRad();
+				var x2 = lon2-lon1;
+				var dLon = x2.toRad();
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				                Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+				                Math.sin(dLon/2) * Math.sin(dLon/2);
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+				var d = R * c;
+				return d;
+			}
 			function renderMap(data)
 			{
 				var j;
+				var distance;
 				var them = [];
 				var them_marker = [];
 				var login = [];
@@ -96,8 +115,10 @@
 						map: map
 					});
 					them_marker[j].setMap(map);
-					login[j] = data[j].login;
-					attachContent(them_marker[j], data[j].login, data[j].message);
+
+					distance = calcDistance(myLat, myLng, data[j].lat, data[j].lng);
+
+					attachContent(them_marker[j], data[j].login, data[j].message, distance);
 
 
 
