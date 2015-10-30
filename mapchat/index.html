@@ -2,9 +2,8 @@
 
 <html>
 	<head>
-
 		<title>
-
+			MAPCHAT
         </title>
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
         <link rel="stylesheet" href="style.css" />
@@ -13,6 +12,7 @@
 			var myLat = 0;		// https://github.com/tuftsdev/WebProgramming/tree/gh-pages/examples/google_maps
 			var myLng = 0;
 			var request = new XMLHttpRequest();
+
 			var me = new google.maps.LatLng(myLat, myLng);
 			var myOptions = {
 						zoom: 13,
@@ -97,8 +97,16 @@
 				// Update map and go there...
 				map.panTo(me);
 				// Create a marker
+				var icon = {
+				    url: "snail.png", // url
+				    scaledSize: new google.maps.Size(30, 30), // scaled size
+				    origin: new google.maps.Point(0,0), // origin
+				    anchor: new google.maps.Point(0, 0) // anchor
+				};
+
 				marker = new google.maps.Marker({
-					position: me
+					position: me,
+					icon: icon
 				});
 				marker.setMap(map);
 
