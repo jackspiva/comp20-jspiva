@@ -59,11 +59,10 @@
 				}
 				http.send(params);
 			}
-			function attachContent(marker, login) {
+			function attachContent(marker, login, message) {
 			  var infowindow = new google.maps.InfoWindow({
-			    content: login
+			    content: "<div><p>" + login + "</p>" + "<p>" + message + "</p></div>"
 			  });
-
 			  marker.addListener('click', function() {
 			    infowindow.open(marker.get('map'), marker);
 			  });
@@ -73,15 +72,14 @@
 				var j;
 				var them = [];
 				var them_marker = [];
-				var title = [];
+				var login = [];
 				me = new google.maps.LatLng(myLat, myLng);
 
 				// Update map and go there...
 				map.panTo(me);
 				// Create a marker
 				marker = new google.maps.Marker({
-					position: me,
-					title: "Here I Am!"
+					position: me
 				});
 				marker.setMap(map);
 
@@ -95,13 +93,11 @@
 					them[j] = new google.maps.LatLng(data[j].lat, data[j].lng);
 					them_marker[j] = new google.maps.Marker({
 						position: them[j],
-						title: data[j].login,
 						map: map
 					});
 					them_marker[j].setMap(map);
-					title[j] = them_marker[j].title;
-
-					attachContent(them_marker[j], title[j]);
+					login[j] = data[j].login;
+					attachContent(them_marker[j], data[j].login, data[j].message);
 
 
 
