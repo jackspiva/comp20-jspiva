@@ -53,16 +53,18 @@
 				    if(http.readyState == 4 && http.status == 200) {
 				        data = JSON.parse(http.responseText);
 				        renderMap(data);
-				    }
+				    } else if(http.status == 404) {
+						alert("sendLocation server responded 404");
+					}
 				}
 				http.send(params);
 			}
 			function renderMap(data)
 			{
-				alert(data);
+				var j;
+				var them = [];
+				var them_marker = [];
 				me = new google.maps.LatLng(myLat, myLng);
-
-				them = new google.maps.LatLng(42.412928, -71.137394);
 
 				// Update map and go there...
 				map.panTo(me);
@@ -73,11 +75,8 @@
 				});
 				marker.setMap(map);
 
-				them_marker = new google.maps.Marker({
-					position: them,
-					title: "Here they are!"
-				});
-				them_marker.setMap(map);
+
+
 
 				// Open info window on click of marker
 				google.maps.event.addListener(marker, 'click', function() {
@@ -85,11 +84,14 @@
 					infowindow.open(map, marker);
 				});
 
-				// Open info window on click of marker
-				google.maps.event.addListener(them_marker, 'click', function() {
-					infowindow.setContent(them_marker.title);
-					infowindow.open(map, them_marker);
-				});
+				for(j = 0; j < data.length; j++) {
+					them[j] = new google.maps.LatLng(data[j].lat, data[j].lng);
+					them_marker[j] = new google.maps.Marker({
+						position: them[j],
+						title: data[j].message
+					});
+					them_marker[j].setMap(map);
+				}
 			}
 		</script>
 	</head>
