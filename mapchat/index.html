@@ -43,7 +43,7 @@
 			{
 				var http = new XMLHttpRequest();
 				var url = "https://secret-about-box.herokuapp.com/sendLocation";
-				var params = "login=CameronRodriquez&lat=" + myLat + "&lng=" + myLng + "&message=HI";
+				var params = "login=CameronRodriquez&lat=" + myLat + "&lng=" + myLng + "&message=SUP";
 				http.open("POST", url, true);
 
 				//Send the proper header information along with the request
@@ -83,7 +83,7 @@
 				                Math.sin(dLon/2) * Math.sin(dLon/2);
 				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 				var d = R * c;
-				return d;
+				return d*0.621371;
 			}
 			function renderMap(data)
 			{
@@ -97,7 +97,7 @@
 				// Update map and go there...
 				map.panTo(me);
 				// Create a marker
-				var icon = {
+				var icon = {				// Based on discussion here: https://stackoverflow.com/questions/15096461/resize-google-maps-marker-icon-image
 				    url: "snail.png", // url
 				    scaledSize: new google.maps.Size(30, 30), // scaled size
 				    origin: new google.maps.Point(0,0), // origin
@@ -112,7 +112,7 @@
 
 				// Open info window on click of marker
 				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(marker.title);
+					infowindow.setContent("<div><p>CameronRodriquez</p><p>SUP</p><p>0</p></div>");
 					infowindow.open(map, marker);
 				});
 
