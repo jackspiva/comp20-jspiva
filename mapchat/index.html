@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			MAPCHAT
+        </title>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+        <link rel="stylesheet" href="style.css" />
+
+		<script>				// Map display code based off class example at
+			var myLat = 0;		// https://github.com/tuftsdev/WebProgramming/tree/gh-pages/examples/google_maps
+			var myLng = 0;
+			var request = new XMLHttpRequest();
+
+			var me = new google.maps.LatLng(myLat, myLng);
+			var myOptions = {
+						zoom: 13,
+						center: me,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					};
+			var map;
+			var marker;
+			var infowindow = new google.maps.InfoWindow();
+			function init()
+			{
+				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				getMyLocation();
+			}
+			function getMyLocation() {
+				if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
+					navigator.geolocation.getCurrentPosition(function(position) {
+						myLat = position.coords.latitude;
+						myLng = position.coords.longitude;
+						getData();
+					});
+				}
+				else {
+					alert("Geolocation is not supported by your web browser.  What a shame!");
+				}
+			}
+			function getData()
+			{
+				var http = new XMLHttpRequest();
+				var url = "https://secret-about-box.herokuapp.com/sendLocation";
+				var params = "login=CameronRodriquez&lat=" + myLat + "&lng=" + myLng + "&message=SUP";
+				http.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+				http.onreadystatechange = function() {//Call a function when the state changes.
+				    if(http.readyState == 4 && http.status == 200) {
+				        data = JSON.parse(http.responseText);
+				        renderMap(data);
+				    } else if(http.status == 404) {
+						alert("sendLocation server responded 404");
+					}
+				}
+				http.send(params);
+			}
+			function attachContent(marker, login, message, distance) {
+			  var infowindow = new google.maps.InfoWindow({
+			    content: "<div><p>" + login + "</p><p>" + message + "</p><p>" + distance + "</p></div>"
+			  });
+			  marker.addListener('click', function() {
+			    infowindow.open(marker.get('map'), marker);
+			  });
+		  	}
+			function calcDistance(lat1, lon1, lat2, lon2)	// code based on stack overflow discussion at
+			{												// https://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript
+				Number.prototype.toRad = function() {
+				   return this * Math.PI / 180;
+				}
+				var R = 6371; // km
+				//has a problem with the .toRad() method below.
+				var x1 = lat2-lat1;
+				var dLat = x1.toRad();
+				var x2 = lon2-lon1;
+				var dLon = x2.toRad();
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				                Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+				                Math.sin(dLon/2) * Math.sin(dLon/2);
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+				var d = R * c;
+				return d*0.621371;
+			}
+			function renderMap(data)
+			{
+				var j;
+				var distance;
+				var them = [];
+				var them_marker = [];
+				var login = [];
+				me = new google.maps.LatLng(myLat, myLng);
+
+				// Update map and go there...
+				map.panTo(me);
+				// Create a marker
+				var icon = {				// Based on discussion here: https://stackoverflow.com/questions/15096461/resize-google-maps-marker-icon-image
+				    url: "snail.png", // url
+				    scaledSize: new google.maps.Size(30, 30), // scaled size
+				    origin: new google.maps.Point(0,0), // origin
+				    anchor: new google.maps.Point(0, 0) // anchor
+				};
+
+				marker = new google.maps.Marker({
+					position: me,
+					icon: icon
+				});
+				marker.setMap(map);
+
+				// Open info window on click of marker
+				google.maps.event.addListener(marker, 'click', function() {
+					infowindow.setContent("<div><p>CameronRodriquez</p><p>SUP</p><p>0</p></div>");
+					infowindow.open(map, marker);
+				});
+
+				for(j = 0; j < data.length; j++) {
+					them[j] = new google.maps.LatLng(data[j].lat, data[j].lng);
+					them_marker[j] = new google.maps.Marker({
+						position: them[j],
+						map: map
+					});
+					them_marker[j].setMap(map);
+
+					distance = calcDistance(myLat, myLng, data[j].lat, data[j].lng);
+
+					attachContent(them_marker[j], data[j].login, data[j].message, distance);
+
+
+
+				}
+			}
+		</script>
+	</head>
+
+	<body onload="init()">
+		<div id="map_canvas"></div>
+	</body>
+</html>
