@@ -20,8 +20,13 @@
 		function reload() {
 			elem = document.getElementById("log");
 			output = "";
-			for (var i = localStorage.length - 1; i >= 0; i--){
-			    output = output + "<p>" + localStorage.key(i) + " - " + localStorage.getItem(localStorage.key(i)) + "</p>";
+			var words = JSON.parse(localStorage.getItem("words"));
+			if (words == null) {
+				localStorage.setItem("words", JSON.stringify([" "]));
+				var words = JSON.parse(localStorage.getItem("words"));
+			}
+			for (var i = words.length - 1; i >= 0; i--){
+			    output = output + "<p>" + words[i] + "</p>";
 			}
 			elem.innerHTML = output;
 		}
@@ -32,7 +37,10 @@
 			var weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 			txt = document.getElementById("msg").value;
-			localStorage[d.toDateString() + " " + d.toTimeString()] = txt;
+
+			var words = JSON.parse(localStorage.getItem("words"));
+			words.push(d.toDateString() + " " + d.toTimeString() + " - " + txt);
+			localStorage.setItem("words", JSON.stringify(words));
 			reload();
 		}
 
