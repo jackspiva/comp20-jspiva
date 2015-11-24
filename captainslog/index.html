@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Captain's Log</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+        $(document).ready(function(){
+			reload();
+			$("#msg").keypress(function(event) {
+				if (event.which == 13) {
+					store();
+				}
+			});
+        });
+
+		function reload() {
+			elem = document.getElementById("log");
+			output = "";
+			var words = JSON.parse(localStorage.getItem("words"));
+			if (words == null) {
+				localStorage.setItem("words", JSON.stringify([" "]));
+				var words = JSON.parse(localStorage.getItem("words"));
+			}
+			for (var i = words.length - 1; i >= 0; i--){
+			    output = output + "<p>" + words[i] + "</p>";
+			}
+			elem.innerHTML = output;
+		}
+
+		function store() {
+			var d = new Date();
+			var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			var weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+			txt = document.getElementById("msg").value;
+
+			var words = JSON.parse(localStorage.getItem("words"));
+			words.push(d.toDateString() + " " + d.toTimeString() + " - " + txt);
+			localStorage.setItem("words", JSON.stringify(words));
+			reload();
+		}
+
+	</script>
+</head>
+
+<body>
+	<h1>Captain's Log</h1>
+	<h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
+	<div id="log"></div>
+</body>
+</html>
